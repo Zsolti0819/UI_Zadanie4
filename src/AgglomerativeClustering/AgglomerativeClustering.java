@@ -8,48 +8,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import Main.Main;
+import Main.*;
 
 public class AgglomerativeClustering {
 
-    List<DataPoint> dataPoints = new ArrayList<>();
     List<DataPoint> centroids = new ArrayList<>();
 
-    public static ArrayList<DataPoint> generatePoints() {
-        ArrayList<DataPoint> dataSet = new ArrayList<>(20);
-        int max = 5000;
-        int maxOffset = 100;
-
-        Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            int randomX = (random.nextInt(2*max)-max);
-            int randomY = (random.nextInt(2*max)-max);
-            DataPoint dataPoint = new DataPoint();
-            dataPoint.setX(randomX);
-            dataPoint.setY(randomY);
-            if (!dataSet.contains(dataPoint))
-                dataSet.add(dataPoint);
-        }
-
-        while (dataSet.size() != Main.POINTCOUNT) {
-            DataPoint randomPoint = dataSet.get(random.nextInt(dataSet.size()));
-            int X_offset = (random.nextInt(2*maxOffset)-maxOffset);
-            int Y_offset = (random.nextInt(2*maxOffset)-maxOffset);
-            double randomPointX = randomPoint.getX()+X_offset;
-            double randomPointY = randomPoint.getY()+Y_offset;
-            DataPoint dataPoint = new DataPoint();
-            dataPoint.setX(randomPointX);
-            dataPoint.setY(randomPointY);
-            dataSet.add(dataPoint);
-        }
-        return dataSet;
-    }
-
     public void run () {
-
-        dataPoints = generatePoints();
         int count = 0;
-        for (DataPoint point : dataPoints) {
+        for (DataPoint point : Main.dataPoints) {
             count++;
             point.setChecked(false);
             point.setClusterNumber(count);
@@ -57,13 +24,13 @@ public class AgglomerativeClustering {
 
         int inThisCluster = 0;
         double distance;
-        for (int i = 0; i < dataPoints.size(); i++) {
-            if (!dataPoints.get(i).isChecked()) {
+        for (int i = 0; i < Main.dataPoints.size(); i++) {
+            if (!Main.dataPoints.get(i).isChecked()) {
                 DataPoint centroid = new DataPoint();
-                centroid.setX(dataPoints.get(i).getX());
-                centroid.setY(dataPoints.get(i).getY());
+                centroid.setX(Main.dataPoints.get(i).getX());
+                centroid.setY(Main.dataPoints.get(i).getY());
                 centroid.setClusterNumber(i);
-                for (DataPoint dataPoint : dataPoints) {
+                for (DataPoint dataPoint : Main.dataPoints) {
                     distance = EuclideanDistance(centroid, dataPoint);
                     if (distance <= Main.MAXOFFSETBETWEENCLUSTERS && !dataPoint.isChecked()) {
                         dataPoint.setClusterNumber(i);
@@ -73,7 +40,7 @@ public class AgglomerativeClustering {
                     }
                 }
                 if (inThisCluster > 1) centroids.add(centroid);
-                else dataPoints.get(i).setChecked(false);
+                else Main.dataPoints.get(i).setChecked(false);
                 inThisCluster = 0;
             }
         }
@@ -96,15 +63,20 @@ public class AgglomerativeClustering {
 
         Random random = new Random();
 
+        int count = 0;
         for (DataPoint centroid : centroids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            for (DataPoint dataPoint : dataPoints)
-                if (dataPoint.getClusterNumber() == centroid.getClusterNumber())
-                    graphics2D.drawOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 10, 10);
-            graphics2D.drawOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
-            graphics2D.fillOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
-        }
+            for (DataPoint dataPoint : Main.dataPoints)
+                if (dataPoint.getClusterNumber() == centroid.getClusterNumber()) {
+                    count++;
+                    graphics2D.drawOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 5, 5);
+                    graphics2D.fillOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 5, 5);
+
+                }
+                graphics2D.drawOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 60, 60);
+                graphics2D.fillOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 60, 60);
+            }
 
         graphics2D.dispose ();
         ImageIO.write ( image, "png", new File( "agglomerative_clustering.png" ) );

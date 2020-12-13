@@ -38,7 +38,7 @@ public class DataPoint {
     public boolean isMedoid() {
         return medoid;
     }
-    void setMedoid(boolean medoid) {
+    public void setMedoid(boolean medoid) {
         this.medoid = medoid;
     }
 

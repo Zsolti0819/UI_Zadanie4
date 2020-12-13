@@ -1,4 +1,5 @@
 package K_means;
+import Main.*;
 
 public class Cluster {
 

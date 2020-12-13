@@ -2,6 +2,7 @@ package K_medoids;
 
 import java.util.ArrayList;
 import java.util.List;
+import Main.*;
 
 public class Medoid {
 

@@ -12,40 +12,8 @@ import Main.*;
 
 public class K_medoids {
 
-    List<Medoid> medoids = new ArrayList<>();
-    List<Medoid> finalMedoids = new ArrayList<>();
-    List<DataPoint> dataPoints;
-
-    private static ArrayList<DataPoint> generatePoints() {
-        ArrayList<DataPoint> dataSet = new ArrayList<>(20);
-        int max = 5000;
-        int maxOffset = 100;
-
-        Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            int randomX = (random.nextInt(2*max)-max);
-            int randomY = (random.nextInt(2*max)-max);
-            DataPoint dataPoint = new DataPoint();
-            dataPoint.setX(randomX);
-            dataPoint.setY(randomY);
-            if (!dataSet.contains(dataPoint))
-                dataSet.add(dataPoint);
-
-        }
-
-        while (dataSet.size() != Main.POINTCOUNT) {
-            DataPoint randomPoint = dataSet.get(random.nextInt(dataSet.size()));
-            int X_offset = (random.nextInt(2*maxOffset)-maxOffset);
-            int Y_offset = (random.nextInt(2*maxOffset)-maxOffset);
-            double randomPointX = randomPoint.getX()+X_offset;
-            double randomPointY = randomPoint.getY()+Y_offset;
-            DataPoint dataPoint = new DataPoint();
-            dataPoint.setX(randomPointX);
-            dataPoint.setY(randomPointY);
-            dataSet.add(dataPoint);
-        }
-        return dataSet;
-    }
+    ArrayList<Medoid> medoids = new ArrayList<>();
+    ArrayList<Medoid> finalMedoids = new ArrayList<>();
 
     private void extractRandomMedoids (List<DataPoint> dataSet, List<Medoid> medoids) {
         Random random = new Random();
@@ -97,14 +65,12 @@ public class K_medoids {
 
     public void run() {
 
-        dataPoints = generatePoints();
-
-        extractRandomMedoids(dataPoints, finalMedoids);
-        calculateCost(dataPoints, finalMedoids);
+        extractRandomMedoids(Main.dataPoints, finalMedoids);
+        calculateCost(Main.dataPoints, finalMedoids);
 
         while (true) {
-            extractRandomMedoids(dataPoints, medoids);
-            calculateCost(dataPoints, medoids);
+            extractRandomMedoids(Main.dataPoints, medoids);
+            calculateCost(Main.dataPoints, medoids);
 
             double cost = 0;
             double finalCost = 0;
@@ -133,10 +99,11 @@ public class K_medoids {
         for (Medoid finalMedoid : finalMedoids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            graphics2D.drawOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
-            graphics2D.fillOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
+            graphics2D.drawOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 60, 60);
+            graphics2D.fillOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 60, 60);
             for (int j = 0; j < finalMedoid.getDataPoints().size(); j++) {
-                graphics2D.drawOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 10, 10);
+                graphics2D.drawOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
+                graphics2D.fillOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
             }
         }
 
