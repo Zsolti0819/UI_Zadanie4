@@ -55,29 +55,50 @@ public class DivisiveClustering {
             point.setClusterNumber(0);
         }
 
-
-        int inThisCluster = 0;
+        int count = 0;
+        int inThisCluster = -1;
         double distance;
         for (int i = 0; i < dataPoints.size(); i++) {
             if (!dataPoints.get(i).isChecked()) {
                 DataPoint centroid = new DataPoint();
                 centroid.setX(dataPoints.get(i).getX());
                 centroid.setY(dataPoints.get(i).getY());
-                centroid.setClusterNumber(i);
-                for (DataPoint dataPoint : dataPoints) {
-                    distance = EuclideanDistance(centroid, dataPoint);
+                centroid.setClusterNumber(dataPoints.get(i).getClusterNumber());
+                centroids.add(centroid);
+                double minValue = Integer.MAX_VALUE;
+                for (int j = 0; j < dataPoints.size(); j++) {
+                    distance = EuclideanDistance(centroid, dataPoints.get(j));
+                    /*
                     if (distance <= Main.MAXOFFSETBETWEENCLUSTERS && !dataPoint.isChecked()) {
                         dataPoint.setClusterNumber(i);
                         dataPoint.setChecked(true);
                         updateCentroid(centroid, dataPoint);
                         inThisCluster++;
                     }
+                     */
+                    if (distance < minValue && !dataPoints.get(j).isChecked()) {
+                        minValue = distance;
+                        inThisCluster = j;
+                        count++;
+                    }
+
                 }
+
+                if (inThisCluster != -1) {
+                    dataPoints.get(inThisCluster).setChecked(true);
+                    dataPoints.get(inThisCluster).setClusterNumber(dataPoints.get(i).getClusterNumber());
+                    updateCentroid(centroid, dataPoints.get(inThisCluster));
+
+                }
+
+                count = 0;
+                inThisCluster = -1;
+                /*
                 if (inThisCluster > 0)
                     centroids.add(centroid);
                 else
                     dataPoints.get(i).setChecked(false);
-                inThisCluster = 0;
+                 */
             }
         }
     }
@@ -101,6 +122,7 @@ public class DivisiveClustering {
         Random random = new Random();
 
         for (DataPoint centroid : centroids) {
+            System.out.println("Hello");
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
             for (DataPoint dataPoint : dataPoints)
