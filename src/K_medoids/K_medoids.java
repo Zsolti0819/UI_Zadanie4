@@ -85,8 +85,8 @@ public class K_medoids {
         for (Medoid finalMedoid : finalMedoids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            graphics2D.drawRect((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
-            graphics2D.fillRect((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
+            graphics2D.drawOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
+            graphics2D.fillOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
             for (int j = 0; j < finalMedoid.getDataPoints().size(); j++) {
                 graphics2D.drawRect((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
             }

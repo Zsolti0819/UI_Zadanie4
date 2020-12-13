@@ -1,6 +1,5 @@
 package AgglomerativeClustering;
 
-import DivisiveClustering.DataPoint;
 import Main.Main;
 
 import javax.imageio.ImageIO;
@@ -8,17 +7,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 public class AgglomerativeClustering {
 
-    List<DivisiveClustering.DataPoint> dataPoints = new ArrayList<>();
-    List<DivisiveClustering.DataPoint> centroids = new ArrayList<>();
+    List<DataPoint> data = new ArrayList<>();
+    List<Cluster> clusters = new ArrayList<>();
+    Map<Cluster, List<DataPoint>> clusterRecords = new LinkedHashMap<>();
 
-    public static ArrayList<DivisiveClustering.DataPoint> generatePoints() {
-        ArrayList<DivisiveClustering.DataPoint> dataSet = new ArrayList<>(20);
+    public static ArrayList<DataPoint> generatePoints() {
+        ArrayList<DataPoint> dataSet = new ArrayList<>(20);
         int max = 5000;
         int maxOffset = 100;
 
@@ -26,7 +25,7 @@ public class AgglomerativeClustering {
         for (int i = 0; i < 20; i++) {
             int randomX = (random.nextInt(2*max)-max);
             int randomY = (random.nextInt(2*max)-max);
-            DivisiveClustering.DataPoint dataPoint = new DivisiveClustering.DataPoint();
+            DataPoint dataPoint = new DataPoint();
             dataPoint.setX(randomX);
             dataPoint.setY(randomY);
             if (!dataSet.contains(dataPoint))
@@ -35,12 +34,12 @@ public class AgglomerativeClustering {
         }
 
         while (dataSet.size() != Main.POINTCOUNT) {
-            DivisiveClustering.DataPoint randomPoint = dataSet.get(random.nextInt(dataSet.size()));
+            DataPoint randomPoint = dataSet.get(random.nextInt(dataSet.size()));
             int X_offset = (random.nextInt(2*maxOffset)-maxOffset);
             int Y_offset = (random.nextInt(2*maxOffset)-maxOffset);
             double randomPointX = randomPoint.getX()+X_offset;
             double randomPointY = randomPoint.getY()+Y_offset;
-            DivisiveClustering.DataPoint dataPoint = new DivisiveClustering.DataPoint();
+            DataPoint dataPoint = new DataPoint();
             dataPoint.setX(randomPointX);
             dataPoint.setY(randomPointY);
             dataSet.add(dataPoint);
@@ -48,42 +47,50 @@ public class AgglomerativeClustering {
         return dataSet;
     }
 
-    public void run () {
+    public void run() {
+        int counter = 1;
+        data = generatePoints();
+        Iterator<DataPoint> iterator = data.iterator();
 
-        dataPoints = generatePoints();
-        for (int i = 0; i < dataPoints.size(); i++) {
-            dataPoints.get(i).setChecked(false);
-            dataPoints.get(i).setClusterNumber(i);
-        }
+        DataPoint dataPoint;
 
-        double distance;
-        for (int i = 0; i < dataPoints.size(); i++) {
-            if (!dataPoints.get(i).isChecked()) {
-                dataPoints.get(i).setCentroid(true);
-                for (DivisiveClustering.DataPoint dataPoint : dataPoints) {
-                    distance = Math.sqrt(Math.pow((dataPoints.get(i).getX() - dataPoint.getX()), 2) + Math.pow((dataPoints.get(i).getY() - dataPoint.getY()), 2));
-                    if (distance <= Main.MAXOFFSETBETWEENCLUSTERS && !dataPoint.isChecked()) {
-                        dataPoint.setClusterNumber(i);
-                        dataPoint.setChecked(true);
+        while(iterator.hasNext()) {
+            dataPoint = iterator.next();
+            if (counter <= Main.POINTCOUNT) {
+                dataPoint.setClusterNumber(counter);
+                initializeCluster(counter, dataPoint);
+                counter++;
+            }
+            else {
+
+                double minDistance = Integer.MAX_VALUE;
+                Cluster whichCluster = null;
+
+                for(Cluster cluster : clusters) {
+                    double distance = cluster.calculateDistance(dataPoint);
+                    if(minDistance > distance) {
+                        minDistance = distance;
+                        whichCluster = cluster;
                     }
                 }
+
+                assert whichCluster != null;
+                dataPoint.setClusterNumber(whichCluster.getClusterNumber());
+                whichCluster.updateCentroid(dataPoint);
+                clusterRecords.get(whichCluster).add(dataPoint);
+
             }
         }
-
-        for (DivisiveClustering.DataPoint dataPoint : dataPoints)
-            if (dataPoint.isCentroid())
-                centroids.add(dataPoint);
-
     }
 
-    public void printInfo() {
-        for (int i = 0; i < centroids.size(); i++) {
-            System.out.println("Centroid "+centroids.get(i).getClusterNumber()+" ["+centroids.get(i).getX()+"; "+centroids.get(i).getY()+"]");
-            for (DivisiveClustering.DataPoint dataPoint : dataPoints) {
-                if (!dataPoint.isCentroid() && dataPoint.getClusterNumber() == i)
-                    System.out.println("Point [" + dataPoint.getX() + "; " + dataPoint.getY() + "]");
-            }
-        }
+    public void initializeCluster(int clusterNumber, DataPoint dataPoint) {
+
+        Cluster cluster = new Cluster(clusterNumber, dataPoint.getX(), dataPoint.getY());
+        clusters.add(cluster);
+        List<DataPoint> clusterDataPoint = new ArrayList<>();
+        clusterDataPoint.add(dataPoint);
+        clusterRecords.put(cluster, clusterDataPoint);
+
     }
 
     public void printToPNG() throws IOException {
@@ -94,21 +101,21 @@ public class AgglomerativeClustering {
 
         Random random = new Random();
 
-        for (int i = 0; i < centroids.size(); i++) {
+        for (Map.Entry<Cluster, List<DataPoint>> entry : clusterRecords.entrySet()) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            graphics2D.drawRect((int) dataPoints.get(i).getX()+5000, (int) dataPoints.get(i).getY()+5000, 50, 50);
-            graphics2D.fillRect((int) dataPoints.get(i).getX()+5000, (int) dataPoints.get(i).getY()+5000, 50, 50);
-            for (DataPoint dataPoint : dataPoints) {
-                if (!dataPoint.isCentroid() && dataPoint.getClusterNumber() == i) {
-                    graphics2D.drawRect((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 10, 10);
-                }
-            }
-        }
+            graphics2D.drawOval((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
+            graphics2D.fillOval((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
+            int value = entry.getKey().getClusterNumber();
+            for (DataPoint datum : data)
+                if (datum.getClusterNumber() == value)
+                    graphics2D.drawRect((int) datum.getX() + 5000, (int) datum.getY() + 5000, 10, 10);
 
+        }
 
         graphics2D.dispose ();
         ImageIO.write ( image, "png", new File( "agglomerative_clustering.png" ) );
 
     }
+
 }

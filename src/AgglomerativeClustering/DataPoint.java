@@ -26,23 +26,4 @@ public class DataPoint {
 		this.clusterNumber = clusterNumber;
 	}
 
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	private boolean checked;
-
-	public boolean isCentroid() {
-		return centroid;
-	}
-
-	public void setCentroid(boolean centroid) {
-		this.centroid = centroid;
-	}
-
-	private boolean centroid;
 }

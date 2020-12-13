@@ -103,8 +103,8 @@ public class K_means {
         for (Map.Entry<Cluster, List<DataPoint>> entry : clusterRecords.entrySet()) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            graphics2D.drawRect((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
-            graphics2D.fillRect((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
+            graphics2D.drawOval((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
+            graphics2D.fillOval((int) entry.getKey().getX_Centroid()+5000, (int) entry.getKey().getY_Centroid()+5000, 50, 50);
             int value = entry.getKey().getClusterNumber();
             for (DataPoint datum : data)
                 if (datum.getClusterNumber() == value)
