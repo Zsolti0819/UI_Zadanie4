@@ -9,7 +9,7 @@ import K_means.*;
 import K_medoids.*;
 
 public class Main {
-	public static int MAXOFFSETBETWEENCLUSTERS = 500;
+	public static int MAXOFFSETBETWEENCLUSTERS = 750;
 	public static int CLUSTERCOUNT = 20;
 	public static int POINTCOUNT = 40020;
 
@@ -67,7 +67,6 @@ public class Main {
 				DivisiveClustering divisiveClustering = new DivisiveClustering();
 				divisiveClustering.run();
 				divisiveClustering.printToPNG();
-				// divisiveClustering.printInfo();
 				long endTime = System.nanoTime();
 				long totalTime = (endTime - startTime) / 1000000;
 				System.out.println("Beh programu: "+ totalTime+" ms\n");

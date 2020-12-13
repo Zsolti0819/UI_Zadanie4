@@ -52,7 +52,7 @@ public class DivisiveClustering {
 
         for (DataPoint point : dataPoints) {
             point.setChecked(false);
-            point.setClusterNumber(Integer.MAX_VALUE);
+            point.setClusterNumber(0);
         }
 
 
@@ -64,8 +64,6 @@ public class DivisiveClustering {
                 centroid.setX(dataPoints.get(i).getX());
                 centroid.setY(dataPoints.get(i).getY());
                 centroid.setClusterNumber(i);
-                dataPoints.get(i).setChecked(true);
-                dataPoints.get(i).setClusterNumber(i);
                 for (DataPoint dataPoint : dataPoints) {
                     distance = EuclideanDistance(centroid, dataPoint);
                     if (distance <= Main.MAXOFFSETBETWEENCLUSTERS && !dataPoint.isChecked()) {
@@ -77,6 +75,8 @@ public class DivisiveClustering {
                 }
                 if (inThisCluster > 0)
                     centroids.add(centroid);
+                else
+                    dataPoints.get(i).setChecked(false);
                 inThisCluster = 0;
             }
         }
@@ -92,16 +92,6 @@ public class DivisiveClustering {
         centroid.setY((centroid.getY() + dataPoint.getY())/2);
     }
 
-    public void printInfo() {
-        for (int i = 0; i < centroids.size(); i++) {
-            System.out.println("Centroid "+centroids.get(i).getClusterNumber()+" ["+centroids.get(i).getX()+"; "+centroids.get(i).getY()+"]");
-            for (DataPoint dataPoint : dataPoints) {
-                if (dataPoint.getClusterNumber() == i)
-                    System.out.println("Point [" + dataPoint.getX() + "; " + dataPoint.getY() + "]");
-            }
-        }
-    }
-
     public void printToPNG() throws IOException {
         final BufferedImage image = new BufferedImage ( 10000, 10000, BufferedImage.TYPE_INT_ARGB );
         final Graphics2D graphics2D = image.createGraphics ();
@@ -109,22 +99,20 @@ public class DivisiveClustering {
         graphics2D.fillRect (0,0,10000,10000);
 
         Random random = new Random();
-        int count = 0;
 
-        for (int i = 0; i < centroids.size(); i++) {
+        for (DataPoint centroid : centroids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
-            graphics2D.drawOval((int) dataPoints.get(i).getX()+5000, (int) dataPoints.get(i).getY()+5000, 50, 50);
-            graphics2D.fillOval((int) dataPoints.get(i).getX()+5000, (int) dataPoints.get(i).getY()+5000, 50, 50);
             for (DataPoint dataPoint : dataPoints)
-                if (dataPoint.getClusterNumber() == i)
+                if (dataPoint.getClusterNumber() == centroid.getClusterNumber())
                     graphics2D.drawRect((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 10, 10);
-
+            graphics2D.drawOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
+            graphics2D.fillOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
         }
-
 
         graphics2D.dispose ();
         ImageIO.write ( image, "png", new File( "divisive_clustering.png" ) );
 
     }
+
 }
