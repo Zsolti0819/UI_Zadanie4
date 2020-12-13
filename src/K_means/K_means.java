@@ -15,7 +15,7 @@ public class K_means {
     List<Cluster> clusters = new ArrayList<>();
     Map<Cluster, List<DataPoint>> clusterRecords = new LinkedHashMap<>();
 
-    public static ArrayList<DataPoint> generatePoints() {
+    private static ArrayList<DataPoint> generatePoints() {
         ArrayList<DataPoint> dataSet = new ArrayList<>(20);
         int max = 5000;
         int maxOffset = 100;
@@ -49,6 +49,9 @@ public class K_means {
     public void run() {
         int counter = 1;
         data = generatePoints();
+
+        //Collections.shuffle(data);
+
         Iterator<DataPoint> iterator = data.iterator();
 
         DataPoint dataPoint;
@@ -67,13 +70,14 @@ public class K_means {
 
                 for(Cluster cluster : clusters) {
                     double distance = cluster.calculateDistance(dataPoint);
-                    if(minDistance > distance) {
+                    if(minDistance > distance && !dataPoint.isChecked()) {
                         minDistance = distance;
                         whichCluster = cluster;
                     }
                 }
 
                 assert whichCluster != null;
+                dataPoint.setChecked(true);
                 dataPoint.setClusterNumber(whichCluster.getClusterNumber());
                 whichCluster.updateCentroid(dataPoint);
                 clusterRecords.get(whichCluster).add(dataPoint);
@@ -82,7 +86,7 @@ public class K_means {
         }
     }
 
-    public void initializeCluster(int clusterNumber, DataPoint dataPoint) {
+    private void initializeCluster(int clusterNumber, DataPoint dataPoint) {
 
         Cluster cluster = new Cluster(clusterNumber, dataPoint.getX(), dataPoint.getY());
         clusters.add(cluster);
@@ -108,7 +112,8 @@ public class K_means {
             int value = entry.getKey().getClusterNumber();
             for (DataPoint datum : data)
                 if (datum.getClusterNumber() == value)
-                    graphics2D.drawRect((int) datum.getX() + 5000, (int) datum.getY() + 5000, 10, 10);
+                    graphics2D.drawOval((int) datum.getX() + 5000, (int) datum.getY() + 5000, 10, 10);
+
 
         }
 

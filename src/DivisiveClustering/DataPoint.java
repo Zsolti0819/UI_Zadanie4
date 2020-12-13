@@ -36,13 +36,4 @@ public class DataPoint {
 
 	private boolean checked;
 
-	public boolean isCentroid() {
-		return centroid;
-	}
-
-	public void setCentroid(boolean centroid) {
-		this.centroid = centroid;
-	}
-
-	private boolean centroid;
 }

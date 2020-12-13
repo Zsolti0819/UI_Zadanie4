@@ -26,4 +26,15 @@ public class DataPoint {
 		this.clusterNumber = clusterNumber;
 	}
 
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	private boolean checked;
+
+
 }
