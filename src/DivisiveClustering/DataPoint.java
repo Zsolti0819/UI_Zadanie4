@@ -3,10 +3,6 @@ package DivisiveClustering;
 public class DataPoint {
 
 	private double X;
-
-	public DataPoint() {
-	}
-
 	public double getX() {
 		return X;
 	}

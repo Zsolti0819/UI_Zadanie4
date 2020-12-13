@@ -29,7 +29,6 @@ public class AgglomerativeClustering {
             dataPoint.setY(randomY);
             if (!dataSet.contains(dataPoint))
                 dataSet.add(dataPoint);
-
         }
 
         while (dataSet.size() != Main.POINTCOUNT) {
@@ -49,7 +48,6 @@ public class AgglomerativeClustering {
     public void run () {
 
         dataPoints = generatePoints();
-
         int count = 0;
         for (DataPoint point : dataPoints) {
             count++;
@@ -74,7 +72,7 @@ public class AgglomerativeClustering {
                         inThisCluster++;
                     }
                 }
-                if (inThisCluster > 0) centroids.add(centroid);
+                if (inThisCluster > 1) centroids.add(centroid);
                 else dataPoints.get(i).setChecked(false);
                 inThisCluster = 0;
             }
@@ -103,7 +101,7 @@ public class AgglomerativeClustering {
             graphics2D.setPaint(c);
             for (DataPoint dataPoint : dataPoints)
                 if (dataPoint.getClusterNumber() == centroid.getClusterNumber())
-                    graphics2D.drawRect((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 10, 10);
+                    graphics2D.drawOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 10, 10);
             graphics2D.drawOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
             graphics2D.fillOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 50, 50);
         }

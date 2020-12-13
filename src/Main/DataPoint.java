@@ -1,7 +1,6 @@
-package K_medoids;
+package Main;
 
 public class DataPoint {
-
     private double X;
     public double getX() {
         return X;
@@ -18,6 +17,23 @@ public class DataPoint {
         Y = y;
     }
 
+    private int clusterNumber;
+    public int getClusterNumber() {
+        return clusterNumber;
+    }
+    public void setClusterNumber(int clusterNumber) {
+        this.clusterNumber = clusterNumber;
+    }
+
+
+    private boolean checked;
+    public boolean isChecked() {
+        return checked;
+    }
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
     private boolean medoid;
     public boolean isMedoid() {
         return medoid;
@@ -25,5 +41,6 @@ public class DataPoint {
     void setMedoid(boolean medoid) {
         this.medoid = medoid;
     }
+
 
 }

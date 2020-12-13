@@ -16,7 +16,7 @@ public class K_medoids {
     List<Medoid> finalMedoids = new ArrayList<>();
     List<DataPoint> dataPoints;
 
-    public static ArrayList<DataPoint> generatePoints() {
+    private static ArrayList<DataPoint> generatePoints() {
         ArrayList<DataPoint> dataSet = new ArrayList<>(20);
         int max = 5000;
         int maxOffset = 100;
@@ -47,55 +47,6 @@ public class K_medoids {
         return dataSet;
     }
 
-    public void run() {
-
-        dataPoints = generatePoints();
-
-        extractRandomMedoids(dataPoints, finalMedoids);
-        calculateCost(dataPoints, finalMedoids);
-
-        while (true) {
-            extractRandomMedoids(dataPoints, medoids);
-            calculateCost(dataPoints, medoids);
-
-            double sum = 0;
-            double sumfinal = 0;
-            for (Medoid medoid : medoids)
-                sum += medoid.getCost();
-
-            for (Medoid finalMedoid : finalMedoids)
-                sumfinal += finalMedoid.getCost();
-
-            if (sum >= sumfinal)
-                break;
-
-            finalMedoids = medoids;
-            finalMedoidsSetFalse(medoids);
-        }
-    }
-
-    public void printToPNG() throws IOException {
-        final BufferedImage image = new BufferedImage ( 10000, 10000, BufferedImage.TYPE_INT_ARGB );
-        final Graphics2D graphics2D = image.createGraphics ();
-        graphics2D.setPaint (Color.BLACK);
-        graphics2D.fillRect (0,0,10000,10000);
-
-        Random random = new Random();
-
-        for (Medoid finalMedoid : finalMedoids) {
-            Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
-            graphics2D.setPaint(c);
-            graphics2D.drawOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
-            graphics2D.fillOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
-            for (int j = 0; j < finalMedoid.getDataPoints().size(); j++) {
-                graphics2D.drawRect((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
-            }
-        }
-
-        graphics2D.dispose ();
-        ImageIO.write ( image, "png", new File( "k_medoids.png"));
-    }
-
     private void extractRandomMedoids (List<DataPoint> dataSet, List<Medoid> medoids) {
         Random random = new Random();
 
@@ -103,7 +54,7 @@ public class K_medoids {
             int index = random.nextInt(dataSet.size());
             DataPoint item = dataSet.get(index);
             if (!(item.isMedoid())) {
-                item.setMedoids(true);
+                item.setMedoid(true);
                 Medoid medoid = new Medoid(item, 0);
 
                 if (medoids.size() == Main.CLUSTERCOUNT)
@@ -140,8 +91,57 @@ public class K_medoids {
 
     private void finalMedoidsSetFalse(List<Medoid> finalMedoids) {
         for (Medoid medoid : finalMedoids) {
-            medoid.getCenterOfMedoid().setMedoids(false);
+            medoid.getCenterOfMedoid().setMedoid(false);
         }
+    }
+
+    public void run() {
+
+        dataPoints = generatePoints();
+
+        extractRandomMedoids(dataPoints, finalMedoids);
+        calculateCost(dataPoints, finalMedoids);
+
+        while (true) {
+            extractRandomMedoids(dataPoints, medoids);
+            calculateCost(dataPoints, medoids);
+
+            double cost = 0;
+            double finalCost = 0;
+            for (Medoid medoid : medoids)
+                cost += medoid.getCost();
+
+            for (Medoid finalMedoid : finalMedoids)
+                finalCost += finalMedoid.getCost();
+
+            if (cost >= finalCost)
+                break;
+
+            finalMedoids = medoids;
+            finalMedoidsSetFalse(medoids);
+        }
+    }
+
+    public void printToPNG() throws IOException {
+        final BufferedImage image = new BufferedImage ( 10000, 10000, BufferedImage.TYPE_INT_ARGB );
+        final Graphics2D graphics2D = image.createGraphics ();
+        graphics2D.setPaint (Color.BLACK);
+        graphics2D.fillRect (0,0,10000,10000);
+
+        Random random = new Random();
+
+        for (Medoid finalMedoid : finalMedoids) {
+            Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+            graphics2D.setPaint(c);
+            graphics2D.drawOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
+            graphics2D.fillOval((int) finalMedoid.getCenterOfMedoid().getX() + 5000, (int) finalMedoid.getCenterOfMedoid().getY() + 5000, 50, 50);
+            for (int j = 0; j < finalMedoid.getDataPoints().size(); j++) {
+                graphics2D.drawOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 10, 10);
+            }
+        }
+
+        graphics2D.dispose ();
+        ImageIO.write ( image, "png", new File( "k_medoids.png"));
     }
 
 }
