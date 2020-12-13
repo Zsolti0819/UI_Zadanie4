@@ -74,10 +74,8 @@ public class AgglomerativeClustering {
                         inThisCluster++;
                     }
                 }
-                if (inThisCluster > 0)
-                    centroids.add(centroid);
-                else
-                    dataPoints.get(i).setChecked(false);
+                if (inThisCluster > 0) centroids.add(centroid);
+                else dataPoints.get(i).setChecked(false);
                 inThisCluster = 0;
             }
         }

@@ -3,6 +3,10 @@ package DivisiveClustering;
 public class DataPoint {
 
 	private double X;
+
+	public DataPoint() {
+	}
+
 	public double getX() {
 		return X;
 	}
@@ -36,13 +40,4 @@ public class DataPoint {
 
 	private boolean checked;
 
-	public boolean isCentroid() {
-		return centroid;
-	}
-
-	public void setCentroid(boolean centroid) {
-		this.centroid = centroid;
-	}
-
-	private boolean centroid;
 }
