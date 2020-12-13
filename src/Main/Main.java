@@ -66,7 +66,7 @@ public class Main {
 
 			if (choice == 1) {
 				long startTime = System.nanoTime();
-				System.out.println("K Means klastrovanie");
+				System.out.println("K Means zhlukovanie");
 				K_means k_means = new K_means();
 				k_means.run();
 				k_means.printToPNG();
@@ -77,7 +77,7 @@ public class Main {
 
 			if (choice == 2) {
 				long startTime = System.nanoTime();
-				System.out.println("K Medoids klastrovanie");
+				System.out.println("K Medoids zhlukovanie");
 				K_medoids clustering = new K_medoids();
 				clustering.run();
 				clustering.printToPNG();
@@ -88,7 +88,7 @@ public class Main {
 
 			if (choice == 3) {
 				long startTime = System.nanoTime();
-				System.out.println("Aglomerativne klastrovanie");
+				System.out.println("Aglomerativne zhlukovanie");
 				AgglomerativeClustering agglomerativeClustering = new AgglomerativeClustering();
 				agglomerativeClustering.run();
 				agglomerativeClustering.printToPNG();
@@ -99,7 +99,7 @@ public class Main {
 
 			if (choice == 4) {
 				long startTime = System.nanoTime();
-				System.out.println("Divizivne klastrovanie");
+				System.out.println("Divizivne zhlukovanie");
 				DivisiveClustering divisiveClustering = new DivisiveClustering();
 				divisiveClustering.run();
 				divisiveClustering.printToPNG();

@@ -73,11 +73,11 @@ public class DivisiveClustering {
                         inThisCluster++;
                     }
                 }
-<<<<<<< HEAD
+
                 if (inThisCluster > 0) centroids.add(centroid);
-=======
+
                 if (inThisCluster > 1) centroids.add(centroid);
->>>>>>> tmp
+
                 else dataPoints.get(i).setChecked(false);
                 inThisCluster = 0;
             }
