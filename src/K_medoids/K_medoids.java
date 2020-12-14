@@ -96,6 +96,7 @@ public class K_medoids {
 
         Random random = new Random();
 
+        int fail = 0;
         for (Medoid finalMedoid : finalMedoids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
@@ -104,7 +105,13 @@ public class K_medoids {
             for (int j = 0; j < finalMedoid.getDataPoints().size(); j++) {
                 graphics2D.drawOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
                 graphics2D.fillOval((int) finalMedoid.getDataPoints().get(j).getX() + 5000, (int) finalMedoid.getDataPoints().get(j).getY() + 5000, 5, 5);
+                if (Math.sqrt(Math.pow((finalMedoid.getCenterOfMedoid().getX() - finalMedoid.getDataPoints().get(j).getX()), 2) + Math.pow((finalMedoid.getCenterOfMedoid().getY() - finalMedoid.getDataPoints().get(j).getY()),2)) > Main.MAXOFFSETBETWEENCLUSTERS)
+                    fail++;
             }
+        }
+        if (fail > 0) {
+            System.out.println("Aspon jeden bod mal vacsiu vzdialenost od centroidu ako " + Main.MAXOFFSETBETWEENCLUSTERS + "-> Neuspesne zhlukovanie");
+            System.out.println("Pocet takych bodov: "+fail);
         }
 
         graphics2D.dispose ();

@@ -1,10 +1,7 @@
 package Main;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 import AgglomerativeClustering.AgglomerativeClustering;
 import DivisiveClustering.*;
@@ -12,7 +9,7 @@ import K_means.*;
 import K_medoids.*;
 
 public class Main {
-	public static int MAXOFFSETBETWEENCLUSTERS = 750;
+	public static int MAXOFFSETBETWEENCLUSTERS = 500;
 	public static int CLUSTERCOUNT = 20;
 	public static int POINTCOUNT = 40020;
 
@@ -46,6 +43,9 @@ public class Main {
 			dataPoint.setY(randomPointY);
 			dataSet.add(dataPoint);
 		}
+
+		Collections.shuffle(dataSet);
+
 		return dataSet;
 	}
 

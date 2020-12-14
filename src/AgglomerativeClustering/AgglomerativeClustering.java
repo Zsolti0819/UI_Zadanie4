@@ -63,21 +63,25 @@ public class AgglomerativeClustering {
 
         Random random = new Random();
 
-        int count = 0;
+        int fail = 0;
         for (DataPoint centroid : centroids) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
             for (DataPoint dataPoint : Main.dataPoints)
                 if (dataPoint.getClusterNumber() == centroid.getClusterNumber()) {
-                    count++;
                     graphics2D.drawOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 5, 5);
                     graphics2D.fillOval((int) dataPoint.getX() + 5000, (int) dataPoint.getY() + 5000, 5, 5);
+                    if (Math.sqrt(Math.pow((centroid.getX() - dataPoint.getX()), 2) + Math.pow((centroid.getY() - dataPoint.getY()), 2)) > Main.MAXOFFSETBETWEENCLUSTERS)
+                        fail++;
 
                 }
                 graphics2D.drawOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 60, 60);
                 graphics2D.fillOval((int) centroid.getX() + 5000, (int) centroid.getY() + 5000, 60, 60);
             }
-
+        if (fail > 0) {
+            System.out.println("Aspon jeden bod mal vacsiu vzdialenost od centroidu ako " + Main.MAXOFFSETBETWEENCLUSTERS + " -> Neuspesne zhlukovanie");
+            System.out.println("Pocet takych bodov: "+fail);
+        }
         graphics2D.dispose ();
         ImageIO.write ( image, "png", new File( "agglomerative_clustering.png" ) );
 

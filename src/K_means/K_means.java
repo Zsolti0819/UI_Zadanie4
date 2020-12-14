@@ -69,6 +69,7 @@ public class K_means {
 
         Random random = new Random();
 
+        int fail = 0;
         for (Map.Entry<Cluster, List<DataPoint>> entry : clusterRecords.entrySet()) {
             Color c = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
             graphics2D.setPaint(c);
@@ -79,9 +80,14 @@ public class K_means {
                 if (datum.getClusterNumber() == value) {
                     graphics2D.drawOval((int) datum.getX() + 5000, (int) datum.getY() + 5000, 5, 5);
                     graphics2D.fillOval((int) datum.getX() + 5000, (int) datum.getY() + 5000, 5, 5);
+                    if (Math.sqrt(Math.pow((entry.getKey().getX_Centroid() - datum.getX()), 2) + Math.pow((entry.getKey().getY_Centroid() - datum.getY()),2)) > Main.MAXOFFSETBETWEENCLUSTERS)
+                        fail++;
                 }
+        }
 
-
+        if (fail > 0) {
+            System.out.println("Aspon jeden bod mal vacsiu vzdialenost od centroidu ako " + Main.MAXOFFSETBETWEENCLUSTERS + "-> Neuspesne zhlukovanie");
+            System.out.println("Pocet takych bodov: "+fail);
         }
 
         graphics2D.dispose ();
